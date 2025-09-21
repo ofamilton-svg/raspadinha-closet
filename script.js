@@ -12,8 +12,8 @@ const shareButton = document.getElementById("share-whatsapp");
 
 let isDrawing = false;
 let confetes = [];
+let chanceDeBrinde = 0.25; // 25% de chance, você pode ajustar
 
-// Ajusta o canvas e confete responsivamente
 function ajustarCanvas() {
   const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width;
@@ -29,7 +29,6 @@ function ajustarCanvas() {
 ajustarCanvas();
 window.addEventListener('resize', ajustarCanvas);
 
-// Eventos touch
 canvas.addEventListener("touchstart", (e) => { isDrawing = true; e.preventDefault(); });
 canvas.addEventListener("touchend", () => { isDrawing = false; ctx.beginPath(); });
 canvas.addEventListener("touchmove", raspandoTouch, { passive: false });
@@ -43,7 +42,6 @@ function raspandoTouch(e) {
   raspandoBase(x, y);
 }
 
-// Eventos mouse
 canvas.addEventListener("mousedown", () => { isDrawing = true; });
 canvas.addEventListener("mouseup", () => { isDrawing = false; ctx.beginPath(); });
 canvas.addEventListener("mousemove", (e) => {
@@ -62,7 +60,6 @@ function raspandoBase(x, y) {
   checkRaspado();
 }
 
-// Verifica se mais de 50% foi raspado
 function checkRaspado() {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   let pixels = imageData.data;
@@ -77,34 +74,40 @@ function checkRaspado() {
     canvas.style.pointerEvents = "none";
     raspeAqui.style.opacity = 0;
 
-    const ganhouBrinde = Math.random() < 0.25;
+    premio.style.display = "none";
+    mensagemFallback.style.display = "none";
+    whatsappLink.style.display = "none";
+
+    const ganhouBrinde = Math.random() < chanceDeBrinde;
 
     if (ganhouBrinde) {
       premio.style.display = "block";
+      startConfete();
+
       const numero = "5585984189001";
       const mensagem = encodeURIComponent(
         "🎁 Acabei de ganhar um brinde na raspadinha da Closet da Marcilia! Visite: Rua NE-9, Nº 132, Bom Jardim"
       );
       whatsappLink.href = `https://wa.me/${numero}?text=${mensagem}`;
       whatsappLink.style.display = "block";
-      startConfete();
     } else {
       mensagemFallback.style.display = "block";
     }
   }
 }
 
-// Confete
+// Confete ultra atrativo
 function startConfete() {
   confetes = [];
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 150; i++) {
     confetes.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 5 + 2,
+      r: Math.random() * 6 + 2,
       color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-      speed: Math.random() * 1.5 + 0.5, // mais lento no celular
-      angle: Math.random() * Math.PI * 2
+      speed: Math.random() * 1.5 + 0.5,
+      angle: Math.random() * Math.PI * 2,
+      shape: Math.random() > 0.5 ? "circle" : "square"
     });
   }
   requestAnimationFrame(animateConfete);
@@ -123,13 +126,17 @@ function animateConfete() {
 
     confCtx.fillStyle = c.color;
     confCtx.beginPath();
-    confCtx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
-    confCtx.fill();
+    if (c.shape === "circle") {
+      confCtx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      confCtx.fill();
+    } else {
+      confCtx.fillRect(c.x, c.y, c.r * 2, c.r * 2);
+    }
   });
   requestAnimationFrame(animateConfete);
 }
 
-// Compartilhamento sempre visível
+// Compartilhamento
 const urlRaspadinha = encodeURIComponent(
   "https://ofamilton-svg.github.io/raspadinha-closet/"
 );
