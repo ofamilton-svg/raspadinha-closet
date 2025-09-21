@@ -1,110 +1,92 @@
 body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    padding: 20px;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
 }
 
 h1 {
-    color: #fff;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    margin-bottom: 10px;
-    text-align: center;
-    font-size: 1.5em;
+  color: #fff;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 1.5em;
 }
 
 #endereco-loja {
-    color: #fff;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-align: center;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .raspadinha {
-    position: relative;
-    width: 90vw;
-    max-width: 400px;
-    height: 60vw;
-    max-height: 250px;
-    border: 3px solid #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  position: relative;
+  width: 90vw;
+  max-width: 400px;
+  height: 60vw;
+  max-height: 250px;
+  border: 3px solid #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-#raspe-aqui {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4vw;
-    max-font-size: 24px;
-    font-weight: bold;
-    color: #555;
-    z-index: 1;
-    pointer-events: none;
-    transition: opacity 1s ease;
-    text-align: center;
+#raspe-aqui, #premio, #mensagem-fallback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+  padding: 0 10px;
+  font-size: 5vw;
 }
 
-#premio, #mensagem-fallback {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4vw;
-    max-font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    z-index: 2;
-    padding: 0 10px;
-}
-
-#premio { color: #222; }
-#mensagem-fallback { color: #900; }
+#premio { color: #222; display: none; }
+#mensagem-fallback { color: #900; display: none; }
 
 #raspadinhaCanvas, #confeteCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 #raspadinhaCanvas { cursor: pointer; }
 #confeteCanvas { pointer-events: none; z-index: 3; }
 
 .btn-whatsapp {
-    display: none;
-    position: relative;
-    color: white;
-    font-weight: bold;
-    padding: 12px 20px;
-    border-radius: 25px;
-    text-decoration: none;
-    margin-top: 15px;
-    font-size: 4vw;
-    max-font-size: 18px;
-    text-align: center;
-    transition: background 0.3s;
+  display: none;
+  position: relative;
+  color: white;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  margin-top: 15px;
+  font-size: 4.5vw;
+  max-font-size: 18px;
+  text-align: center;
+  transition: background 0.3s;
 }
 
 #whatsapp-link { background-color: #25D366; }
 #whatsapp-link:hover { background-color: #1ebe57; }
 
 #share-whatsapp {
-    display: block;
-    background-color: #128C7E;
-    font-size: 4vw;
-    max-font-size: 18px;
-    margin-top: 15px;
-    text-align: center;
+  display: block;
+  background-color: #128C7E;
+  font-size: 4.5vw;
+  max-font-size: 18px;
+  margin-top: 15px;
+  text-align: center;
 }
 #share-whatsapp:hover { background-color: #0F6F60; }
