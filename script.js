@@ -1,50 +1,71 @@
 const canvas = document.getElementById("raspadinhaCanvas");
 const ctx = canvas.getContext("2d");
-canvas.width = 300;
-canvas.height = 200;
 
-// Preenche a área da raspadinha
-ctx.fillStyle = "#c0c0c0";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+// Ajusta canvas responsivo
+function ajustarCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
 
-// Confete
+    ctx.fillStyle = "#c0c0c0";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+ajustarCanvas();
+window.addEventListener('resize', ajustarCanvas);
+
 const confeteCanvas = document.getElementById("confeteCanvas");
 const confCtx = confeteCanvas.getContext("2d");
-confeteCanvas.width = 300;
-confeteCanvas.height = 200;
+confeteCanvas.width = canvas.width;
+confeteCanvas.height = canvas.height;
 let confetes = [];
 
-// Elementos
 const raspeAqui = document.getElementById("raspe-aqui");
 const premio = document.getElementById("premio");
+const mensagemFallback = document.getElementById("mensagem-fallback");
 const whatsappLink = document.getElementById("whatsapp-link");
+const shareButton = document.getElementById("share-whatsapp");
 
-// Variáveis de controle
 let isDrawing = false;
 
-// Eventos de mouse
+canvas.addEventListener("touchstart", (e) => { isDrawing = true; e.preventDefault(); });
+canvas.addEventListener("touchend", () => { isDrawing = false; ctx.beginPath(); });
+canvas.addEventListener("touchmove", raspandoTouch, { passive: false });
+
+function raspandoTouch(e) {
+    if (!isDrawing) return;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.arc(x, y, 25, 0, Math.PI * 2);
+    ctx.fill();
+
+    checkRaspado();
+}
+
+// Suporta mouse também
 canvas.addEventListener("mousedown", () => { isDrawing = true; });
 canvas.addEventListener("mouseup", () => { isDrawing = false; ctx.beginPath(); });
-canvas.addEventListener("mousemove", raspando);
+canvas.addEventListener("mousemove", raspandoMouse);
 
-// Função de raspagem
-function raspando(e) {
+function raspandoMouse(e) {
     if (!isDrawing) return;
-
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    ctx.arc(x, y, 20, 0, Math.PI * 2);
+    ctx.arc(x, y, 25, 0, Math.PI * 2);
     ctx.fill();
-    ctx.closePath();
 
     checkRaspado();
 }
 
-// Verifica se mais de 50% foi raspado
 function checkRaspado() {
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     let pixels = imageData.data;
@@ -56,22 +77,29 @@ function checkRaspado() {
 
     const totalPixels = canvas.width * canvas.height;
     if (transparentPixels / totalPixels > 0.5) {
-        premio.style.display = "block"; // mostra prêmio
-        canvas.style.pointerEvents = "none"; // bloqueia mais raspadas
-        raspeAqui.style.opacity = 0; // desaparece suavemente
+        canvas.style.pointerEvents = "none";
+        raspeAqui.style.opacity = 0;
 
-        // Configura botão WhatsApp com número correto
-        const numero = "5585984189001"; // código do Brasil + número sem espaços
-        const mensagem = encodeURIComponent("🎁 Acabei de ganhar um brinde na raspadinha da Closet da Marcilia!");
-        whatsappLink.href = `https://wa.me/${numero}?text=${mensagem}`;
-        whatsappLink.style.display = "block"; // mostra o botão
+        const ganhouBrinde = Math.random() < 0.25;
 
-        startConfete();
+        if (ganhouBrinde) {
+            premio.style.display = "block";
+            const numero = "5585984189001";
+            const mensagem = encodeURIComponent(
+                "🎁 Acabei de ganhar um brinde na raspadinha da Closet da Marcilia! Visite: Rua NE-9, Nº 132, Bom Jardim"
+            );
+            whatsappLink.href = `https://wa.me/${numero}?text=${mensagem}`;
+            whatsappLink.style.display = "block";
+            startConfete();
+        } else {
+            mensagemFallback.style.display = "block";
+        }
     }
 }
 
-// Função de confete
+// Confete
 function startConfete() {
+    confetes = [];
     for (let i = 0; i < 100; i++) {
         confetes.push({
             x: Math.random() * canvas.width,
@@ -87,7 +115,7 @@ function startConfete() {
 
 function animateConfete() {
     confCtx.clearRect(0, 0, confeteCanvas.width, confeteCanvas.height);
-    confetes.forEach((c) => {
+    confetes.forEach(c => {
         c.y += c.speed;
         c.x += Math.sin(c.angle);
         c.angle += 0.05;
@@ -103,3 +131,12 @@ function animateConfete() {
     });
     requestAnimationFrame(animateConfete);
 }
+
+// Compartilhamento sempre visível
+const urlRaspadinha = encodeURIComponent(
+    "https://ofamilton-svg.github.io/raspadinha-closet/"
+);
+const mensagemShare = encodeURIComponent(
+    "🎉 Olha a raspadinha que ganhei na Closet da Marcilia! Visite a loja: Rua NE-9, Nº 132, Bom Jardim. Experimente você também: "
+);
+shareButton.href = `https://wa.me/?text=${mensagemShare}${urlRaspadinha}`;
