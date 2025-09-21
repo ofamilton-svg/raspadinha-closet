@@ -12,7 +12,10 @@ const shareButton = document.getElementById("share-whatsapp");
 
 let isDrawing = false;
 let confetes = [];
-let chanceDeBrinde = 0.25; // 25% de chance, você pode ajustar
+let chanceDeBrinde = 0.25; // 25%
+
+// Verifica se o usuário já ganhou
+let jaParticipou = localStorage.getItem("raspadinhaGanhou");
 
 function ajustarCanvas() {
   const rect = canvas.getBoundingClientRect();
@@ -29,6 +32,7 @@ function ajustarCanvas() {
 ajustarCanvas();
 window.addEventListener('resize', ajustarCanvas);
 
+// Eventos touch
 canvas.addEventListener("touchstart", (e) => { isDrawing = true; e.preventDefault(); });
 canvas.addEventListener("touchend", () => { isDrawing = false; ctx.beginPath(); });
 canvas.addEventListener("touchmove", raspandoTouch, { passive: false });
@@ -42,6 +46,7 @@ function raspandoTouch(e) {
   raspandoBase(x, y);
 }
 
+// Eventos mouse
 canvas.addEventListener("mousedown", () => { isDrawing = true; });
 canvas.addEventListener("mouseup", () => { isDrawing = false; ctx.beginPath(); });
 canvas.addEventListener("mousemove", (e) => {
@@ -78,12 +83,15 @@ function checkRaspado() {
     mensagemFallback.style.display = "none";
     whatsappLink.style.display = "none";
 
-    const ganhouBrinde = Math.random() < chanceDeBrinde;
+    if (!jaParticipou) {
+      const ganhouBrinde = Math.random() < chanceDeBrinde;
+      localStorage.setItem("raspadinhaGanhou", ganhouBrinde ? "true" : "false");
+      jaParticipou = localStorage.getItem("raspadinhaGanhou");
+    }
 
-    if (ganhouBrinde) {
+    if (jaParticipou === "true") {
       premio.style.display = "block";
       startConfete();
-
       const numero = "5585984189001";
       const mensagem = encodeURIComponent(
         "🎁 Acabei de ganhar um brinde na raspadinha da Closet da Marcilia! Visite: Rua NE-9, Nº 132, Bom Jardim"
